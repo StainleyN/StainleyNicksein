@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARO - INTERACTIVE FLOWCHART OSCE THT</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-wrapper">
+      <aside class="sidebar">
+        <div class="logo">ARO<span></span></div>
+        <p class="logo-sub">ASMA Resource for OSCE</p>
+        <div class="nav-links">
+          <div
+            class="nav-item active"
+            id="nav-f"
+            onclick="bukaFitur('flowchart')"
+          >
+            <i class="fas fa-project-diagram"></i> Interactive Flowchart
+          </div>
+          <div class="nav-item" id="nav-q" onclick="bukaFitur('quiz')">
+            <i class="fas fa-tasks"></i> Assessment Leaderboard
+          </div>
+          <div class="nav-item" id="nav-d" onclick="bukaFitur('diagnosis')">
+            <i class="fas fa-layer-group"></i> Diagnostic Flashcards
+          </div>
+          <div class="nav-item" id="nav-a" onclick="bukaFitur('ai')">
+            <i class="fas fa-robot"></i> Bot Simulator (Soon)
+          </div>
+          <div
+            class="nav-item"
+            id="nav-c"
+            style="opacity: 0.6; cursor: not-allowed"
+          >
+            <i class="fas fa-book-open"></i> ASMA Comics (Soon)
+          </div>
+          <div class="nav-item" id="nav-r" onclick="bukaFitur('reference')">
+            <i class="fas fa-book"></i> Reference
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div id="section-flowchart">
+          <header class="topbar">
+            <div class="header-info">
+              <h1>Interactive Flowchart</h1>
+              <p>
+                Lengkapi urutan prosedur OSCE dengan menarik langkah ke kotak
+                yang sesuai.
+              </p>
+            </div>
+            <div class="progress-section">
+              <div class="progress-text">
+                Progress: <span id="prog-text">0%</span>
+              </div>
+              <div class="progress-bar"><div id="prog-fill"></div></div>
+            </div>
+          </header>
+
+          <section class="game-container">
+            <div class="source-panel">
+              <div class="panel-header">
+                <i class="fas fa-university"></i>
+                <h2>Bank Jawaban</h2>
+              </div>
+              <div id="bank" class="bank-grid"></div>
+            </div>
+            <div class="flowchart-panel" id="flowchart-container"></div>
+          </section>
+        </div>
+
+        <div id="section-quiz" style="display: none">
+          <header class="topbar">
+            <div class="header-info">
+              <h1>Assessment Leaderboard</h1>
+              <p>
+                Uji kompetensi Anda melalui Pre-test dan Post-test untuk melihat
+                peningkatan nilai.
+              </p>
+            </div>
+          </header>
+
+          <div class="quiz-dashboard">
+            <div class="quiz-main-card">
+              <div id="quiz-start">
+                <div class="input-group">
+                  <label for="nama-mhs"
+                    ><i class="fas fa-user-graduate"></i> Nama Lengkap
+                    Mahasiswa</label
+                  >
+                  <input
+                    type="text"
+                    id="nama-mhs"
+                    placeholder="Masukkan nama lengkap Anda..."
+                    class="input-mhs-large"
+                  />
+                </div>
+
+                <div class="session-container">
+                  <div class="session-card pre" onclick="pilihSesi('pre')">
+                    <div class="session-icon">
+                      <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="session-info">
+                      <h3>Mulai Pre-Test</h3>
+                      <p>Evaluasi awal sebelum mempelajari flowchart.</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                  </div>
+
+                  <div class="session-card post" onclick="pilihSesi('post')">
+                    <div class="session-icon">
+                      <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="session-info">
+                      <h3>Mulai Post-Test</h3>
+                      <p>Evaluasi akhir setelah simulasi selesai.</p>
+                    </div>
+                    <i class="fas fa-arrow-right"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div id="quiz-run" style="display: none">
+                <div class="quiz-run-header">
+                  <span id="session-title-label" class="badge"></span>
+                  <span class="quiz-timer"
+                    >Soal <span id="current-idx">1</span>/10</span
+                  >
+                </div>
+                <div class="progress-bar-small">
+                  <div id="quiz-progress-fill"></div>
+                </div>
+                <h3 id="q-text" class="question-text"></h3>
+                <div id="q-options" class="options-container"></div>
+              </div>
+
+              <div id="quiz-finish" style="display: none" class="finish-card">
+                <div class="confetti-icon"><i class="fas fa-award"></i></div>
+                <h2>Sesi Selesai!</h2>
+                <div class="score-display-box">
+                  <div class="score-item">
+                    <span>Skor Sesi Ini</span>
+                    <h1 id="skor-sesi-val">0</h1>
+                  </div>
+                </div>
+                <p id="msg-total-status" class="total-info"></p>
+                <button class="btn-back-action" onclick="resetUI()">
+                  <i class="fas fa-redo"></i> Kembali ke Menu Utama
+                </button>
+              </div>
+            </div>
+
+            <div class="leaderboard-side-card">
+              <div class="lb-header">
+                <i class="fas fa-trophy"></i>
+                <h3>Leaderboard</h3>
+                <p>Total Skor Akumulasi</p>
+              </div>
+              <div id="lb-list" class="lb-list-modern"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-diagnosis" style="display: none">
+          <header class="topbar">
+            <div class="header-info">
+              <h1>Diagnostic Flashcards</h1>
+              <p>Manajemen Kasus THT Lengkap: Keluhan hingga Edukasi Pasien</p>
+            </div>
+          </header>
+
+          <div class="diag-stepper">
+            <div
+              class="step-diag active"
+              id="sd-1"
+              style="color: #c1082e; border-bottom-color: #c1082e"
+            >
+              KELUHAN
+            </div>
+            <div class="step-diag" id="sd-2">1. DX KERJA</div>
+            <div class="step-diag" id="sd-3">2. DX BANDING</div>
+            <div class="step-diag" id="sd-4">3. FISIK</div>
+            <div class="step-diag" id="sd-5">4. PENUNJANG</div>
+            <div class="step-diag" id="sd-6">5. TREATMENT</div>
+            <div class="step-diag" id="sd-7">6. EDUKASI</div>
+          </div>
+
+          <div class="diag-layout">
+            <div class="card-area">
+              <div id="flashcard-main" class="fc-card">
+                <div id="fc-text-content">
+                  <div class="empty-state">
+                    <i class="fas fa-notes-medical"></i>
+                    <p>Klik "Mulai Kasus Baru" untuk memuat data pasien.</p>
+                  </div>
+                </div>
+              </div>
+              <button onclick="generateKasus()" class="btn-generate-premium">
+                <div class="btn-content">
+                  <i class="fas fa-plus-circle"></i>
+                  <span>MULAI KASUS BARU</span>
+                </div>
+                <div class="btn-shine"></div>
+              </button>
+            </div>
+
+            <div class="interaction-area">
+              <div id="diag-drop-zone">
+                <p id="diag-instruction">DRAG & DROP JAWABAN KE SINI:</p>
+                <div id="diag-answer-list"></div>
+              </div>
+              <div id="diag-options-pool"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-ai" style="display: none">
+          <header class="topbar">
+            <div class="header-info">
+              <h1>Bot Simulator</h1>
+              <p>Latihan komunikasi klinis dengan pasien Bot</p>
+            </div>
+          </header>
+
+          <div class="timer-container">
+            <div class="timer-display">
+              <i class="fas fa-clock"></i>
+              <span id="ai-timer">10:00</span>
+            </div>
+            <div class="timer-bar-bg">
+              <div id="ai-timer-fill"></div>
+            </div>
+          </div>
+
+          <div class="ai-layout">
+            <div class="ai-controls quiz-card">
+              <h3><i class="fas fa-robot"></i> Bot OSCE Patient</h3>
+              <select id="scenario-select" class="input-mhs-large">
+                <option value="0">
+                  Skenario 1: Tn. Andi (Otitis Eksterna)
+                </option>
+                <option value="1">Skenario 2: Ny. Sari (Serumen Prop)</option>
+                <option value="2">Skenario 3: An. Budi (Otitis Media)</option>
+              </select>
+              <button
+                onclick="initAI()"
+                id="start-ai-btn"
+                class="btn-main"
+                style="
+                  width: 100%;
+                  margin-top: 10px;
+                  padding: 15px;
+                  border-radius: 10px;
+                "
+              >
+                Mulai Simulasi
+              </button>
+
+              <div id="chat-box" class="chat-display">
+                <p><em>Klik "Mulai" untuk berinteraksi dengan pasien...</em></p>
+              </div>
+
+              <div class="voice-actions">
+                <button id="mic-btn" class="mic-inactive" disabled>
+                  <i class="fas fa-microphone"></i> Tekan & Tahan untuk Bicara
+                </button>
+              </div>
+            </div>
+
+            <div class="visual-3d quiz-card">
+              <h3><i class="fas fa-microscope"></i> Tampilan Otoskopi (3D)</h3>
+              <div id="canvas-3d">
+                <div class="placeholder-3d">
+                  <i
+                    class="fas fa-eye-slash"
+                    style="font-size: 30px; margin-bottom: 10px"
+                  ></i>
+                  <p>Pemeriksaan fisik belum dimulai</p>
+                </div>
+              </div>
+              <div
+                id="dx-info"
+                class="hidden"
+                style="
+                  margin-top: 20px;
+                  padding: 15px;
+                  background: #fff1f2;
+                  border-left: 5px solid #c1082e;
+                  border-radius: 8px;
+                "
+              >
+                <p>
+                  <strong>Temuan Klinis:</strong> <br /><span id="finding-text"
+                    >-</span
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        
+        <div id="section-reference" style="display: none">
+          <header class="topbar">
+            <div class="header-info">
+              <h1>Medical References</h1>
+              <p>Daftar pustaka dan sumber kredibel yang digunakan dalam materi ARO.</p>
+            </div>
+          </header>
+          <div class="quiz-card" style="padding: 30px; margin-top: 20px;">
+            <ul class="reference-list" style="list-style: none; padding: 0;">
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">1</span>
+                <p>Hogan, Christopher J., and Prasanna Tadi. “Ear Examination.” PubMed, StatPearls Publishing, 2020, <a href="https://www.ncbi.nlm.nih.gov/books/NBK556014/" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">2</span>
+                <p>Wahid, Nur Wahidah B. , and Maximos Attia. “Weber Test.” Nih.gov, StatPearls Publishing, 10 July 2023, <a href="https://www.ncbi.nlm.nih.gov/books/NBK526135/" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">3</span>
+                <p>Kong, Erwin L, and James B Fowler. “Rinne Test.” Nih.gov, StatPearls Publishing, 2019, <a href="https://www.ncbi.nlm.nih.gov/books/NBK431071/" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">4</span>
+                <p>Popescu, Cristina, et al. “Audiometric Outcomes in Chronic Otitis Media with Mastoid Involvement: A Five-Year Clinical Overview.” Diagnostics, vol. 14, no. 22, 13 Nov. 2024, <a href="https://doi.org/10.3390/diagnostics14222546" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">5</span>
+                <p>Jamal, Abdullah, et al. “Etiology, Diagnosis, Complications, and Management of Acute Otitis Media in Children.” Cureus, vol. 14, no. 8, 2022, <a href="https://doi.org/10.7759/cureus.28019" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">6</span>
+                <p>Danishyar, Amina, and John V. Ashurst. “Acute Otitis Media.” PubMed, StatPearls Publishing, 2024, <a href="https://www.ncbi.nlm.nih.gov/books/NBK470332/" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">7</span>
+                <p>Medina-Blasini, Yiraima, and Tariq Sharman. “Otitis Externa.” PubMed, StatPearls Publishing, 2023, <a href="https://www.ncbi.nlm.nih.gov/books/NBK556055/" target="_blank">Link</a></p>
+              </li>
+              <li style="display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <span style="background: #c1082e; color: white; min-width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; flex-shrink: 0;">8</span>
+                <p>Kementerian Kesehatan Republik Indonesia, 2024. <strong>Buku Elektronik PPK. Prescribing Companion.</strong></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
